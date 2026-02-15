@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const { getResponse } = require('./responses');
@@ -34,7 +36,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Rota POST /chat
-app.post('/chat', (req, res) => {
+app.post('/chat', async (req, res) => {
   const { question } = req.body;
   
   // Validação
@@ -44,14 +46,21 @@ app.post('/chat', (req, res) => {
     });
   }
   
-  // Obter resposta
-  const answer = getResponse(question);
-  
-  // Retornar resposta
-  res.json({ 
-    question: question,
-    answer: answer 
-  });
+  try {
+    // Obter resposta (agora é assíncrono)
+    const answer = await getResponse(question);
+    
+    // Retornar resposta
+    res.json({ 
+      question: question,
+      answer: answer 
+    });
+  } catch (error) {
+    console.error('Erro ao processar pergunta:', error);
+    res.status(500).json({ 
+      error: 'Erro ao processar sua pergunta. Tente novamente.' 
+    });
+  }
 });
 
 // Rota para verificar se o servidor está funcionando
