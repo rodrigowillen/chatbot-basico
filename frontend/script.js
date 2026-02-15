@@ -2,6 +2,7 @@
 const chatMessages = document.getElementById('chatMessages');
 const userInput = document.getElementById('userInput');
 const sendButton = document.getElementById('sendButton');
+const restartButton = document.getElementById('restartButton');
 
 // Função para adicionar mensagem ao chat
 function addMessage(text, isUser) {
@@ -45,7 +46,7 @@ async function sendMessage() {
     
     try {
         // Envia requisição para o backend
-        const response = await fetch('http://localhost:3000/chat', {
+        const response = await fetch('https://chatbot-basico-xef3.onrender.com/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -73,8 +74,23 @@ async function sendMessage() {
     }
 }
 
+// Função para reiniciar o chat
+function restartChat() {
+    // Limpa todas as mensagens
+    chatMessages.innerHTML = '';
+    
+    // Adiciona a mensagem de boas-vindas novamente
+    addMessage('Olá! Eu sou seu chatbot. Como posso ajudar você hoje?', false);
+    
+    // Limpa o campo de input e coloca o foco
+    userInput.value = '';
+    userInput.focus();
+}
+
 // Event listeners
 sendButton.addEventListener('click', sendMessage);
+
+restartButton.addEventListener('click', restartChat);
 
 userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
